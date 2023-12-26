@@ -66,7 +66,7 @@ export function downloadBlobData (res, fileName='') {
   link.href = url
   link.download = fileName
   link.click()
-  window.URL.removeObjectURL(link.href)
+  window.URL.revokeObjectURL(link.href)
   link.remove()
 }
 
