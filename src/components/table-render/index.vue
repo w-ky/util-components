@@ -1,8 +1,7 @@
 <script>
 export default {
   name: 'Table',
-  inject: ['getCurLangVal'],
-  props: [
+  props: {
     tableData: {
       type: Array,
       default: () => ([])
@@ -27,10 +26,19 @@ export default {
       type: String,
       default: null
     },
-    page: Number,
-    limit: Number,
-    total: Number
-  ],
+    page: {
+      type: Number,
+      default: null
+    },
+    limit: {
+      type: Number,
+      default: null
+    },
+    total: {
+      type: Number,
+      default: null
+    }
+  },
   methods: {
     isCustomColumn (column) {
       return (
@@ -50,11 +58,11 @@ export default {
       if (column.align) return column.align
         return column.type === 'index' ? 'center' : undefined
     },
-        
+
     getIndex (row, column, cellValue, index) {
       return index + 1
     },
-        
+
     getFormatter (column) {
       if (column.formatter) return column.formatter
       if (column.type === 'index') return this.getIndex
@@ -62,20 +70,15 @@ export default {
         return cellValue || cellValue === 0 ? cellValue : '-'
       }
     },
-        
+
     renderTableItem (column) {
       const name = column.headerKey || 'header' + column.prop
       const scopedSlots = {}
       if (column.headerType === 'slot' && this.$scopedSlots[name]) {
         scopedSlots.header = () => this.$scopedSlots[name]?.()
-      } 
+      }
       if (this.isCustomColumn(column)) {
         scopedSlots.default = (scope) => {
-          if (column.type === 'lang') {
-            return (
-              <span>{this.getCurLangVal(scope.row, column.prop) || '-'}</span>
-            )
-          }
           return this.$scopedSlots[column.prop]?.(scope)
         }
       }
@@ -100,17 +103,17 @@ export default {
           align={this.getAlign(column)}
           formatter={this.getFormatter(column)}
         />
-      )   
+      )
     },
 
     renderTable () {
-      const img = require('xxxxx.png')
+      // const img = require('xxxxx.png')
       const slots = {
         empty: () => {
           if (this.$slots.empty) return this.$slots.empty()
           return (
             <div class="table-empty">
-              <img src={img} />
+              {/* <img src={img} /> */}
               <p>{this.emptyText}</p>
               {
                 this.emptyBtnText ?
@@ -144,7 +147,7 @@ export default {
             {this.tableColumns.map(column => this.renderTableItem(column))}
           </el-table>
           {
-            this.page && this.limit && this.total ? 
+            this.page && this.limit && this.total ?
             (
               <el-pagination
                 page={this.page}
